@@ -37,29 +37,32 @@ architecture rtl of uart_rx_fsm is
   signal n118_o : std_logic;
   signal n119_o : std_logic;
   signal n123_o : std_logic;
-  signal n124_o : std_logic;
-  signal n126_o : std_logic_vector (2 downto 0);
-  signal n128_o : std_logic;
-  signal n130_o : std_logic;
-  signal n132_o : std_logic_vector (2 downto 0);
-  signal n134_o : std_logic;
+  signal n125_o : std_logic;
+  signal n126_o : std_logic;
+  signal n128_o : std_logic_vector (2 downto 0);
+  signal n129_o : std_logic;
+  signal n131_o : std_logic;
+  signal n133_o : std_logic;
+  signal n135_o : std_logic_vector (2 downto 0);
   signal n136_o : std_logic;
-  signal n138_o : std_logic_vector (2 downto 0);
+  signal n138_o : std_logic;
   signal n140_o : std_logic;
-  signal n142_o : std_logic;
-  signal n144_o : std_logic_vector (2 downto 0);
+  signal n142_o : std_logic_vector (2 downto 0);
+  signal n143_o : std_logic;
   signal n145_o : std_logic;
   signal n147_o : std_logic;
-  signal n149_o : std_logic;
-  signal n150_o : std_logic_vector (4 downto 0);
-  signal n152_o : std_logic_vector (2 downto 0);
-  signal n157_q : std_logic_vector (2 downto 0) := "000";
+  signal n149_o : std_logic_vector (2 downto 0);
+  signal n150_o : std_logic;
+  signal n151_o : std_logic;
+  signal n153_o : std_logic;
+  signal n155_o : std_logic_vector (2 downto 0);
+  signal n160_q : std_logic_vector (2 downto 0) := "000";
 begin
   clk_cycle_active <= n109_o;
   data_recieve_active <= n119_o;
   data_validate_active <= n114_o;
   -- uart_rx_fsm.vhd:22:12
-  current_state <= n157_q; -- (isignal)
+  current_state <= n160_q; -- (isignal)
   -- uart_rx_fsm.vhd:25:48
   n105_o <= '1' when current_state = "100" else '0';
   -- uart_rx_fsm.vhd:25:82
@@ -78,50 +81,51 @@ begin
   n119_o <= '0' when n118_o = '0' else '1';
   -- uart_rx_fsm.vhd:34:15
   n123_o <= '1' when rising_edge (clk) else '0';
+  -- uart_rx_fsm.vhd:37:31
+  n125_o <= '1' when std_logic_vector'("000") = current_state else '0';
   -- uart_rx_fsm.vhd:38:28
-  n124_o <= not din;
-  -- uart_rx_fsm.vhd:38:21
-  n126_o <= current_state when n124_o = '0' else "001";
+  n126_o <= not din;
   -- uart_rx_fsm.vhd:37:17
-  n128_o <= '1' when current_state = "000" else '0';
-  -- uart_rx_fsm.vhd:42:38
-  n130_o <= '1' when clk_cycle_cnt = "10111" else '0';
-  -- uart_rx_fsm.vhd:42:21
-  n132_o <= current_state when n130_o = '0' else "010";
-  -- uart_rx_fsm.vhd:41:17
-  n134_o <= '1' when current_state = "001" else '0';
-  -- uart_rx_fsm.vhd:46:32
-  n136_o <= '1' when bit_cnt = "1000" else '0';
-  -- uart_rx_fsm.vhd:46:21
-  n138_o <= current_state when n136_o = '0' else "011";
-  -- uart_rx_fsm.vhd:45:17
-  n140_o <= '1' when current_state = "010" else '0';
-  -- uart_rx_fsm.vhd:51:42
-  n142_o <= '1' when clk_cycle_cnt = "01111" else '0';
-  -- uart_rx_fsm.vhd:50:21
-  n144_o <= current_state when n145_o = '0' else "100";
-  -- uart_rx_fsm.vhd:50:21
-  n145_o <= din and n142_o;
+  n128_o <= current_state when n129_o = '0' else "001";
+  -- uart_rx_fsm.vhd:37:17
+  n129_o <= n125_o and n126_o;
+  -- uart_rx_fsm.vhd:43:35
+  n131_o <= '1' when current_state = "001" else '0';
+  -- uart_rx_fsm.vhd:44:38
+  n133_o <= '1' when clk_cycle_cnt = "10111" else '0';
+  -- uart_rx_fsm.vhd:43:17
+  n135_o <= n128_o when n136_o = '0' else "010";
+  -- uart_rx_fsm.vhd:43:17
+  n136_o <= n131_o and n133_o;
+  -- uart_rx_fsm.vhd:49:34
+  n138_o <= '1' when current_state = "010" else '0';
+  -- uart_rx_fsm.vhd:50:32
+  n140_o <= '1' when bit_cnt = "1000" else '0';
   -- uart_rx_fsm.vhd:49:17
-  n147_o <= '1' when current_state = "011" else '0';
-  -- uart_rx_fsm.vhd:55:17
-  n149_o <= '1' when current_state = "100" else '0';
-  n150_o <= n149_o & n147_o & n140_o & n134_o & n128_o;
-  -- uart_rx_fsm.vhd:36:13
-  with n150_o select n152_o <=
-    "000" when "10000",
-    n144_o when "01000",
-    n138_o when "00100",
-    n132_o when "00010",
-    n126_o when "00001",
-    current_state when others;
+  n142_o <= n135_o when n143_o = '0' else "011";
+  -- uart_rx_fsm.vhd:49:17
+  n143_o <= n138_o and n140_o;
+  -- uart_rx_fsm.vhd:54:34
+  n145_o <= '1' when current_state = "011" else '0';
+  -- uart_rx_fsm.vhd:56:42
+  n147_o <= '1' when clk_cycle_cnt = "01111" else '0';
+  -- uart_rx_fsm.vhd:54:17
+  n149_o <= n142_o when n151_o = '0' else "100";
+  -- uart_rx_fsm.vhd:55:21
+  n150_o <= din and n147_o;
+  -- uart_rx_fsm.vhd:54:17
+  n151_o <= n145_o and n150_o;
+  -- uart_rx_fsm.vhd:62:34
+  n153_o <= '1' when current_state = "100" else '0';
+  -- uart_rx_fsm.vhd:62:17
+  n155_o <= n149_o when n153_o = '0' else "000";
   -- uart_rx_fsm.vhd:34:9
   process (clk, rst)
   begin
     if rst = '1' then
-      n157_q <= "000";
+      n160_q <= "000";
     elsif rising_edge (clk) then
-      n157_q <= n152_o;
+      n160_q <= n155_o;
     end if;
   end process;
 end rtl;

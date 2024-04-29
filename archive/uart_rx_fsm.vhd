@@ -32,31 +32,31 @@ begin
             current_state <= NOT_ACTIVE; 
             
         elsif rising_edge(CLK) then
-
-            case current_state is
-                when NOT_ACTIVE => 
-                    if DIN = '0' then 
-                        current_state <= WAIT_FOR_FIRST_BIT; 
+            if NOT_ACTIVE = current_state then 
+                if DIN = '0' then 
+                    current_state <= WAIT_FOR_FIRST_BIT; 
+                end if;
+            end if;
+            if  current_state = WAIT_FOR_FIRST_BIT then
+                if CLK_CYCLE_CNT = 23 then 
+                    current_state <= READ_DATA; 
+                end if;
+            end if;
+            if current_state = READ_DATA then
+                if BIT_CNT = 8 then 
+                    current_state <= WAIT_FOR_STOP_BIT; 
+                end if;
+            end if;
+            if current_state = WAIT_FOR_STOP_BIT then
+                if DIN = '1' then 
+                    if CLK_CYCLE_CNT = 15 then 
+                        current_state <= VALIDATE_DATA; 
                     end if;
-                when WAIT_FOR_FIRST_BIT =>
-                    if CLK_CYCLE_CNT = 23 then 
-                        current_state <= READ_DATA; 
-                    end if;
-                when READ_DATA =>
-                    if BIT_CNT = 8 then 
-                        current_state <= WAIT_FOR_STOP_BIT; 
-                    end if;
-                when WAIT_FOR_STOP_BIT =>
-                    if DIN = '1' then 
-                        if CLK_CYCLE_CNT = 15 then 
-                            current_state <= VALIDATE_DATA; 
-                        end if;
-                    end if;
-                when VALIDATE_DATA =>
-                    current_state <= NOT_ACTIVE; 
-                when others => null; 
-            end case;
-
+                end if;
+            end if;
+            if current_state = VALIDATE_DATA then
+                current_state <= NOT_ACTIVE;
+            end if; 
         end if;
     end process;
 end architecture;
